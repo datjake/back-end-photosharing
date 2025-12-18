@@ -38,7 +38,7 @@ router.post("/register", async (req, res) => {
     occupation,
   } = req.body;
   if (!login_name || !password || !first_name || !last_name) {
-    res.status(400).send("Missing informations");
+    return res.status(400).send("Missing informations");
   }
   const existing = await User.findOne({ login_name });
   if (existing) {
