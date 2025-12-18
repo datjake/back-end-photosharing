@@ -42,7 +42,7 @@ router.post("/register", async (req, res) => {
   }
   const existing = await User.findOne({ login_name });
   if (existing) {
-    res.status(400).send("Account existing");
+    return res.status(400).send("Account existing");
   }
   const hash = await bcrypt.hash(password, 10);
   const user = await User.create({
@@ -54,7 +54,7 @@ router.post("/register", async (req, res) => {
     description,
     occupation,
   });
-  res.json({ login_name: user.login_name });
+  return res.json({ login_name: user.login_name });
 });
 
 module.exports = router;
