@@ -5,13 +5,13 @@ const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth.js");
 
 // Danh sach nguoi dung
-router.get("/list", auth, async (req, res) => {
+router.get("/list", async (req, res) => {
   const data = await User.find({}, "_id first_name last_name");
   return res.json(data);
 });
 
 //Chi tiet nguoi dung
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select(
       "_id first_name last_name location description occupation"
@@ -27,5 +27,34 @@ router.get("/:id", auth, async (req, res) => {
 });
 
 //Dang ki nguoi dung
+router.post("/register", async (req, res) => {
+  const {
+    login_name,
+    password,
+    first_name,
+    last_name,
+    location,
+    description,
+    occupation,
+  } = req.body;
+  if (!login_name || !password || !first_name || !last_name) {
+    res.status(400).send("Missing informations");
+  }
+  const existing = await User.findOne({ login_name });
+  if (existing) {
+    res.status(400).send("Account existing");
+  }
+  const hash = await bcrypt.hash(password, 10);
+  const user = await User.create({
+    login_name,
+    password: hash,
+    first_name,
+    last_name,
+    location,
+    description,
+    occupation,
+  });
+  res.json({ login_name: user.login_name });
+});
 
 module.exports = router;
