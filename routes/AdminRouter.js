@@ -7,16 +7,16 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
   const { login_name, password } = req.body;
   if (!login_name || !password) {
-    res.status(400).send("Username or password invalid");
+    return res.status(400).send("Username or password invalid");
   }
 
   const user = await User.findOne({ login_name });
   if (!user) {
-    res.status(400).send("Wrong user");
+    return res.status(400).send("Wrong user");
   }
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
-    res.status(400).send("Wrong password");
+    return res.status(400).send("Wrong password");
   }
   req.session.user = {
     _id: user._id,
@@ -31,10 +31,10 @@ router.post("/login", async (req, res) => {
 // Logout
 router.post("/logout", async (req, res) => {
   if (!req.session.user) {
-    res.status(400).send("Invalid");
+    return res.status(400).send("Invalid");
   }
   req.session.destroy();
-  res.sendStatus(200);
+  return res.sendStatus(200);
 });
 
 module.exports = router;

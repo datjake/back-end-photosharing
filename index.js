@@ -9,14 +9,23 @@ const CommentRouter = require("./routes/CommentRouter");
 const AdminRouter = require("./routes/AdminRouter");
 
 dbConnect();
-
-app.use(cors({ credentials: true, origin: true }));
+const corsOptions = {
+  origin: "https://gwzv9z-3000.csb.app", // link front-end
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Cho phép nhận cookie/session
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(
   session({
     secret: "photo-sharing-secret",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      sameSite: "none", // Bắt buộc cho môi trường sandbox/khác domain
+      secure: true, // Bắt buộc khi dùng sameSite: "none"
+    },
   })
 );
 
