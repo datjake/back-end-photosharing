@@ -32,6 +32,7 @@ app.use(
 app.use("/api/user", UserRouter);
 app.use("/api/photo", PhotoRouter);
 app.use("/api/admin", AdminRouter);
+app.use("/images", express.static("images"));
 
 app.get("/", (request, response) => {
   response.send({ message: "Hello from photo-sharing app API!" });
