@@ -29,12 +29,18 @@ router.post("/login", async (req, res) => {
 });
 
 // Logout
-router.post("/logout", async (req, res) => {
+router.post("/logout", (req, res) => {
   if (!req.session.user) {
-    return res.status(400).send("Invalid");
+    return res.status(400).send("Not logged in");
   }
-  req.session.destroy();
-  return res.sendStatus(200);
+
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).send("Logout failed");
+    }
+    res.sendStatus(200);
+  });
 });
+
 
 module.exports = router;

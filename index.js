@@ -25,6 +25,7 @@ app.use(
     cookie: {
       sameSite: "none", // Bắt buộc cho môi trường sandbox/khác domain
       secure: true, // Bắt buộc khi dùng sameSite: "none"
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
