@@ -79,6 +79,14 @@ router.get("/photosOfUser/:id", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+
 // 2. Xóa Comment
 router.delete("/comments/:photo_id/:comment_id", async (req, res) => {
   if (!req.session.user) return res.status(401).send("Unauthorized");
