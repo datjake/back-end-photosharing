@@ -11,7 +11,7 @@ const AdminRouter = require("./routes/AdminRouter");
 dbConnect();
 app.set("trust proxy", 1);
 const corsOptions = {
-  origin: "https://gwzv9z-3000.csb.app", // link front-end
+  origin: "https://k5hmm8-3000.csb.app", // link front-end
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Cho phép nhận cookie/session
   optionsSuccessStatus: 204,
