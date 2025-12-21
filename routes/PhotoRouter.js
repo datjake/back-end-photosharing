@@ -79,4 +79,40 @@ router.get("/photosOfUser/:id", async (req, res) => {
   }
 });
 
+// 2. Xóa Comment
+router.delete("/comments/:photo_id/:comment_id", async (req, res) => {
+  if (!req.session.user) return res.status(401).send("Unauthorized");
+  try {
+    const photo = await Photo.findById(req.params.photo_id);
+    const comment = photo.comments.id(req.params.comment_id);
+    
+    // Bảo vệ: Chỉ người tạo comment mới được xóa
+    if (comment.user_id.toString() !== req.session.user._id) {
+      return res.status(403).send("Bạn không có quyền xóa comment này");
+    }
+    
+    comment.remove(); // Xóa comment khỏi mảng
+    await photo.save();
+    res.status(200).send("Deleted");
+  } catch (err) { res.status(500).send(err.message); }
+});
+
+// 3. Sửa Comment
+router.put("/comments/:photo_id/:comment_id", async (req, res) => {
+  if (!req.session.user) return res.status(401).send("Unauthorized");
+  const { newText } = req.body;
+  try {
+    const photo = await Photo.findById(req.params.photo_id);
+    const comment = photo.comments.id(req.params.comment_id);
+    
+    if (comment.user_id.toString() !== req.session.user._id) {
+      return res.status(403).send("Không có quyền sửa");
+    }
+    
+    comment.comment = newText;
+    await photo.save();
+    res.status(200).json(comment);
+  } catch (err) { res.status(500).send(err.message); }
+});
+
 module.exports = router;
