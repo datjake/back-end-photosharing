@@ -24,7 +24,7 @@ router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
   if (!comment || comment.trim() === "") return res.status(400).send("Invalid comment");
 
   try {
-    const photo = await Photo.findById(photoId).populate("comments.user_id", "first_name last_name").select("_id user_id file_name date_time comments");;
+    const photo = await Photo.findById(photoId);
     ;
     if (!photo) return res.status(400).send("Invalid photo");
 
@@ -71,8 +71,8 @@ router.post("/new",(req, res, next) => {
 // Lấy ảnh của user
 router.get("/photosOfUser/:id", async (req, res) => {
   try {
-    const photos = await Photo.find({ user_id: req.params.id })
-      .select("_id user_id file_name date_time comments");
+    const photos = await Photo.find({ user_id: req.params.id }).populate("comments.user_id", "_id first_name last_name").select("_id user_id file_name date_time comments");
+
     return res.json(photos);
   } catch (err) {
     return res.status(400).json({ message: "Error!" });
