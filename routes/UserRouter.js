@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../db/userModel");
+const Photo = require("../db/photoModel");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth.js");
@@ -16,10 +17,14 @@ router.get("/:id", async (req, res) => {
     const user = await User.findById(req.params.id).select(
       "_id first_name last_name location description occupation"
     );
+    const photoCount = await Photo.countDocuments({user_id:user._id});
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
-    return res.json(user);
+    return res.json({
+      ...user.toObject(),
+      photoCount,
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ message: "Invalid user id" });
