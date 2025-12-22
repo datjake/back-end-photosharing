@@ -17,7 +17,7 @@ router.get("/:id", async (req, res) => {
     const user = await User.findById(req.params.id).select(
       "_id first_name last_name location description occupation"
     );
-    const photoCount = await Photo.countDocuments({user_id:user._id});
+    const photoCount = await Photo.countDocuments({ user_id: user._id });
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
