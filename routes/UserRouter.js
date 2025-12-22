@@ -17,13 +17,30 @@ router.get("/:id", async (req, res) => {
     const user = await User.findById(req.params.id).select(
       "_id first_name last_name location description occupation"
     );
+    // Dem so photo
     const photoCount = await Photo.countDocuments({ user_id: user._id });
+    const photos = await Photo.find(
+      { "comments.user_id": user._id },
+      { comments: 1 }
+    );
+
+    // Dem so comment
+    let commentCount = 0;
+    photos.forEach((p) => {
+      p.comments.forEach((c) => {
+        if (c.user_id.toString() === user._id.toString()) {
+          commentCount++;
+        }
+      });
+    });
+
     if (!user) {
       return res.status(400).json({ message: "User not found" });
     }
     return res.json({
       ...user.toObject(),
       photoCount,
+      commentCount,
     });
   } catch (err) {
     console.log(err);
