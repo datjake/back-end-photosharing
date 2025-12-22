@@ -52,7 +52,7 @@ router.get("/commentOfUser/:userId", async (req, res) => {
     const userId = req.params.userId;
     const photos = await Photo.find({
       "comments.user_id": userId,
-    }).select("_id file_name comments");
+    }).select("_id file_name comments user_id");
 
     const result = [];
 
@@ -63,7 +63,7 @@ router.get("/commentOfUser/:userId", async (req, res) => {
             comment_id: c._id,
             comment: c.comment,
             date_time: c.date_time,
-            photo_id: photo._id,
+            photo_id: photo.user_id,
             file_name: photo.file_name,
           });
         }
