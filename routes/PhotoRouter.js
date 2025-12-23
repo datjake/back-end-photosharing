@@ -118,4 +118,63 @@ router.get("/photosOfUser/:id", async (req, res) => {
   }
 });
 
+// DELETE /api/photo/comment/:commentId
+router.delete("/comment/:commentId", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send("Not logged in");
+    }
+
+    const userId = req.session.user._id;
+    const commentId = req.params.commentId;
+
+    const result = await Photo.updateOne(
+      {
+        "comments._id": commentId,
+        "comments.user_id": userId,
+      },
+      {
+        $pull: { comments: { _id: commentId } },
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(403).send("Not allowed");
+    }
+
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+// PUT /api/photo/comment/:commentId
+router.put("/comment/:commentId", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.status(401).send("Not logged in");
+    }
+
+    const userId = req.session.user._id;
+    const { comment } = req.body;
+
+    const result = await Photo.updateOne(
+      {
+        "comments._id": req.params.commentId,
+        "comments.user_id": userId,
+      },
+      {
+        $set: { "comments.$.comment": comment },
+      }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(403).send("Not allowed");
+    }
+
+    res.sendStatus(200);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 module.exports = router;
