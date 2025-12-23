@@ -63,7 +63,7 @@ router.get("/commentOfUser/:userId", async (req, res) => {
             comment_id: c._id,
             comment: c.comment,
             date_time: c.date_time,
-            photo_id: photo.user_id,
+            photo_id: photo._id,
             file_name: photo.file_name,
           });
         }
