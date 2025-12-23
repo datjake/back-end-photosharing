@@ -18,14 +18,8 @@ router.post("/login", async (req, res) => {
   if (!valid) {
     return res.status(400).send("Wrong password");
   }
-  req.session.user = {
-    _id: user._id,
-    first_name: user.first_name,
-  };
-  res.json({
-    _id: user._id,
-    first_name: user.first_name,
-  });
+  req.session.user = user;
+  res.json(user);
 });
 
 // Logout
@@ -41,6 +35,5 @@ router.post("/logout", (req, res) => {
     res.sendStatus(200);
   });
 });
-
 
 module.exports = router;

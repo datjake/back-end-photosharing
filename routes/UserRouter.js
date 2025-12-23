@@ -79,4 +79,23 @@ router.post("/register", async (req, res) => {
   return res.json({ login_name: user.login_name });
 });
 
+// Route cập nhật thông tin đơn giản nhất
+router.put("/update", async (req, res) => {
+  // 1. Kiểm tra xem đã đăng nhập chưa
+  if (!req.session.user) return res.status(401).send("Bạn chưa đăng nhập");
+
+  try {
+    // 2. Tìm đúng người đang đăng nhập và thay bằng dữ liệu mới từ Form gửi lên
+    const user = await User.findByIdAndUpdate(req.session.user._id, req.body, {
+      new: true,
+    });
+
+    // 3. Cập nhật lại "thẻ tên" của mình trên máy chủ
+    req.session.user = user;
+    res.json(user);
+  } catch (err) {
+    res.status(500).send("Lỗi lưu dữ liệu");
+  }
+});
+
 module.exports = router;
